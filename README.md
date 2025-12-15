@@ -1,22 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Élite Store - Tienda Premium
 
-## Getting Started
+Una aplicación de e-commerce moderna construida con Next.js 16, TypeScript y Tailwind CSS 4.
 
-First, run the development server:
+## 🚀 Características
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- ⚡ Next.js 16 con App Router
+- 🎨 Tailwind CSS 4 para estilos
+- 📱 Diseño completamente responsive
+- 🔤 Tipografías elegantes (Playfair Display + Inter)
+- ✨ Animaciones y transiciones suaves
+- 🎯 SEO optimizado
+- 🧩 Arquitectura de componentes modular
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Instalación y Desarrollo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Ejecutar servidor de desarrollo:**
+   ```bash
+   npm run dev
+   ```
+
+2. **Abrir en el navegador:**
+   ```
+   http://localhost:3000
+   ```
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
