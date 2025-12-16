@@ -9,10 +9,10 @@ export default function Features() {
           <div className="slide-in-left">
             <span className="text-sm font-semibold tracking-widest uppercase text-primary mb-4 block">Por qué elegirnos</span>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              Calidad que marca la diferencia
+              Educación con propósito
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-              Seleccionamos cada artículo pensando en ti. Calidad, diseño y funcionalidad se unen para crear productos que realmente importan.
+              Cada producto es seleccionado cuidadosamente para estimular el aprendizaje, la creatividad y el desarrollo integral de los niños.
             </p>
             
             <div className="space-y-6">
@@ -23,8 +23,8 @@ export default function Features() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Calidad Superior</h3>
-                  <p className="text-muted-foreground">Cada artículo es seleccionado cuidadosamente para garantizar durabilidad, funcionalidad y estética excepcional.</p>
+                  <h3 className="text-xl font-semibold mb-2">Certificación y Seguridad</h3>
+                  <p className="text-muted-foreground">Todos nuestros productos cumplen con normas chilenas e internacionales de seguridad para niños en edad preescolar.</p>
                 </div>
               </div>
               
@@ -35,8 +35,8 @@ export default function Features() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Diseño Único</h3>
-                  <p className="text-muted-foreground">Productos con personalidad que transforman espacios ordinarios en lugares extraordinarios.</p>
+                  <h3 className="text-xl font-semibold mb-2">Pedagogía y Diversión</h3>
+                  <p className="text-muted-foreground">Material diseñado con enfoque Montessori y metodologías activas que estimulan el aprendizaje significativo.</p>
                 </div>
               </div>
               
@@ -47,8 +47,8 @@ export default function Features() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Experiencia Total</h3>
-                  <p className="text-muted-foreground">Desde la compra hasta la entrega, cuidamos cada detalle para que tu experiencia sea memorable.</p>
+                  <h3 className="text-xl font-semibold mb-2">Envío a Todo Chile</h3>
+                  <p className="text-muted-foreground">Despachamos a jardines y establecimientos educacionales en todas las regiones del país.</p>
                 </div>
               </div>
             </div>

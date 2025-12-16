@@ -3,21 +3,21 @@ import { Star } from 'lucide-react';
 const testimonials = [
   {
     id: 1,
-    name: 'María González',
-    role: 'Decoradora de Interiores',
-    content: 'Los productos tienen una calidad excepcional. He transformado completamente el ambiente de varios proyectos con sus artículos únicos.',
+    name: 'Patricia Muñoz',
+    role: 'Directora Jardín Infantil Los Aromos',
+    content: 'Los materiales son de excelente calidad y los niños están fascinados. El impacto en el desarrollo de habilidades ha sido notable.',
   },
   {
     id: 2,
-    name: 'Carlos Ruiz',
-    role: 'Cliente Frecuente',
-    content: 'Cada compra es una experiencia increíble. La atención al detalle y el empaque hacen que cada artículo sea especial desde que llega.',
+    name: 'Roberto Silva',
+    role: 'Coordinador Educativo Kinder San José',
+    content: 'Llevamos 3 años trabajando con ellos. La asesoría pedagógica y la calidad de los productos superan nuestras expectativas.',
   },
   {
     id: 3,
-    name: 'Ana Martínez',
-    role: 'Entusiasta del Diseño',
-    content: 'Encuentro piezas únicas que no veo en ningún otro lugar. Han convertido mi hogar en un espacio que realmente refleja quién soy.',
+    name: 'Carmen Loyola',
+    role: 'Educadora de Párvulos',
+    content: 'Finalmente encontré material didáctico que combina diversión con aprendizaje real. Los niños aprenden jugando de forma natural.',
   },
 ];
 
