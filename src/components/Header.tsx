@@ -110,12 +110,22 @@ export default function Header() {
                       <p className="text-sm font-medium">{user.nombreCompleto}</p>
                       <p className="text-xs text-muted-foreground">{user.email}</p>
                     </div>
+                    <Link
+                      href="/perfil"
+                      prefetch={false}
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-secondary transition-colors text-left"
+                      style={{ backgroundColor: 'hsl(var(--background))' }}
+                    >
+                      <User className="w-4 h-4" />
+                      Mi Perfil
+                    </Link>
                     <button
                       onClick={() => {
                         logout();
                         setIsUserMenuOpen(false);
                       }}
-                      className="w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors text-left text-red-600 dark:text-red-400"
+                      className="w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors text-left text-red-600 dark:text-red-400 border-t border-border"
                       style={{ backgroundColor: 'hsl(var(--background))' }}
                     >
                       <LogOut className="w-4 h-4" />
@@ -199,6 +209,15 @@ export default function Header() {
                   </div>
                   <p className="text-xs text-muted-foreground">{user.email}</p>
                 </div>
+                <Link
+                  href="/perfil"
+                  prefetch={false}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-border rounded-xl hover:bg-secondary transition-all active:scale-95 font-medium"
+                >
+                  <User className="w-4 h-4" />
+                  Mi Perfil
+                </Link>
                 <button
                   onClick={() => {
                     logout();

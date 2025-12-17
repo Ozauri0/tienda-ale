@@ -58,25 +58,25 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 px-4 py-6 sm:py-12">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6 group">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <span className="text-primary-foreground font-bold text-xl">E</span>
+        <div className="text-center mb-6 sm:mb-8">
+          <Link href="/" className="inline-flex items-center gap-2 mb-4 sm:mb-6 group">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="text-primary-foreground font-bold text-lg sm:text-xl">E</span>
             </div>
-            <span className="text-2xl font-bold">EduPlay Chile</span>
+            <span className="text-xl sm:text-2xl font-bold">EduPlay Chile</span>
           </Link>
-          <h1 className="text-3xl font-bold mb-2">Iniciar Sesión</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Iniciar Sesión</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Accede a tu cuenta para continuar
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-card border border-border rounded-2xl shadow-lg p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-card border border-border rounded-2xl shadow-lg p-5 sm:p-8">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Error Message */}
             {error && (
               <div className="bg-destructive/10 border border-destructive/20 text-destructive rounded-xl p-4 text-sm">
@@ -97,7 +97,7 @@ export default function LoginPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all text-base"
                   placeholder="tu@email.com"
                   required
                 />
@@ -117,7 +117,7 @@ export default function LoginPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-12 py-3 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                  className="w-full pl-10 pr-12 py-2.5 sm:py-3 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all text-base"
                   placeholder="••••••••"
                   required
                 />
@@ -139,14 +139,14 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-primary text-primary-foreground py-2.5 sm:py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base"
             >
               {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </button>
           </form>
 
           {/* Divider */}
-          <div className="relative my-6">
+          <div className="relative my-4 sm:my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-border"></div>
             </div>
@@ -160,17 +160,17 @@ export default function LoginPage() {
           {/* Register Link */}
           <Link
             href="/registro"
-            className="block w-full text-center py-3 border border-border rounded-xl font-semibold hover:bg-secondary transition-all"
+            className="block w-full text-center py-2.5 sm:py-3 border border-border rounded-xl font-semibold hover:bg-secondary transition-all text-base"
           >
             Crear Cuenta
           </Link>
         </div>
 
         {/* Back to Home */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-4 sm:mt-6">
           <Link
             href="/"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-block"
           >
             ← Volver al inicio
           </Link>

@@ -266,3 +266,151 @@ export const getProfile = async (
     });
   }
 };
+
+/**
+ * Actualizar perfil del usuario
+ */
+export const updateProfile = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const startTime = Date.now();
+  
+  try {
+    if (!req.user) {
+      res.status(401).json({
+        status: 'error',
+        message: 'Usuario no autenticado',
+      });
+      return;
+    }
+
+    const {
+      nombre,
+      apellidoPaterno,
+      apellidoMaterno,
+      rut,
+      email,
+      currentPassword,
+      newPassword,
+    } = req.body;
+
+    console.log(`[UPDATE_PROFILE] Intento de actualización - Usuario ID: ${req.user.userId}, Email: ${email}`);
+
+    const user = await User.findById(req.user.userId);
+
+    if (!user) {
+      console.log(`[UPDATE_PROFILE] ❌ Usuario no encontrado - ID: ${req.user.userId}`);
+      res.status(404).json({
+        status: 'error',
+        message: 'Usuario no encontrado',
+      });
+      return;
+    }
+
+    // Validar RUT si está siendo modificado
+    if (rut && rut !== user.rut) {
+      if (!validateRUT(rut)) {
+        console.log(`[UPDATE_PROFILE] ❌ RUT inválido - RUT: ${rut}, Usuario: ${user.email}`);
+        res.status(400).json({
+          status: 'error',
+          message: 'RUT inválido',
+        });
+        return;
+      }
+
+      const cleanedRUT = cleanRUT(rut);
+      
+      // Verificar si el RUT ya está en uso por otro usuario
+      const existingRUT = await User.findOne({ rut: cleanedRUT, _id: { $ne: user._id } });
+      if (existingRUT) {
+        console.log(`[UPDATE_PROFILE] ❌ RUT ya en uso - RUT: ${cleanedRUT}`);
+        res.status(400).json({
+          status: 'error',
+          message: 'El RUT ya está registrado',
+        });
+        return;
+      }
+
+      user.rut = cleanedRUT;
+    }
+
+    // Verificar si el email ya está en uso por otro usuario
+    if (email && email !== user.email) {
+      const existingEmail = await User.findOne({ email, _id: { $ne: user._id } });
+      if (existingEmail) {
+        console.log(`[UPDATE_PROFILE] ❌ Email ya en uso - Email: ${email}`);
+        res.status(400).json({
+          status: 'error',
+          message: 'El email ya está registrado',
+        });
+        return;
+      }
+      user.email = email;
+    }
+
+    // Actualizar campos básicos
+    if (nombre) user.nombre = nombre;
+    if (apellidoPaterno) user.apellidoPaterno = apellidoPaterno;
+    user.apellidoMaterno = apellidoMaterno || '';
+
+    // Cambiar contraseña si se proporciona
+    if (newPassword) {
+      if (!currentPassword) {
+        console.log(`[UPDATE_PROFILE] ❌ Contraseña actual no proporcionada - Usuario: ${user.email}`);
+        res.status(400).json({
+          status: 'error',
+          message: 'Debes proporcionar tu contraseña actual',
+        });
+        return;
+      }
+
+      // Verificar contraseña actual
+      const isPasswordValid = await user.comparePassword(currentPassword);
+      if (!isPasswordValid) {
+        console.log(`[UPDATE_PROFILE] ❌ Contraseña actual incorrecta - Usuario: ${user.email}`);
+        res.status(400).json({
+          status: 'error',
+          message: 'Contraseña actual incorrecta',
+        });
+        return;
+      }
+
+      user.password = newPassword; // Se hasheará automáticamente por el pre-save hook
+      console.log(`[UPDATE_PROFILE] Contraseña actualizada - Usuario: ${user.email}`);
+    }
+
+    // Guardar cambios
+    await user.save();
+
+    const duration = Date.now() - startTime;
+    console.log(`[UPDATE_PROFILE] ✅ Perfil actualizado exitosamente - Usuario: ${user.email}, Duration: ${duration}ms`);
+
+    res.json({
+      status: 'success',
+      message: 'Perfil actualizado correctamente',
+      data: {
+        user: {
+          id: user._id,
+          nombre: user.nombre,
+          apellidoPaterno: user.apellidoPaterno,
+          apellidoMaterno: user.apellidoMaterno,
+          nombreCompleto: user.nombreCompleto,
+          rut: user.rut,
+          email: user.email,
+          role: user.role,
+          isActive: user.isActive,
+          createdAt: user.createdAt,
+        },
+      },
+    });
+  } catch (error: any) {
+    const duration = Date.now() - startTime;
+    console.error(`[UPDATE_PROFILE] ❌ Error al actualizar perfil - Duration: ${duration}ms`, error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Error al actualizar perfil',
+      details: error.message,
+    });
+  }
+};
