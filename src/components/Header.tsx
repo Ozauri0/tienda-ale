@@ -43,7 +43,7 @@ export default function Header() {
       <nav ref={menuRef} className="container mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-4">
         <div className="flex items-center justify-between gap-2">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
+          <Link href="/" prefetch={false} className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
             <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary text-primary-foreground flex items-center justify-center rounded-2xl border-2 border-primary/20 shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300">
               <span className="font-bold text-base sm:text-lg">É</span>
             </div>
@@ -53,11 +53,11 @@ export default function Header() {
           
           {/* Menu Desktop */}
           <ul className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium">
-            <li><Link href="/" className="relative group py-2 inline-block">
+            <li><Link href="/" prefetch={false} className="relative group py-2 inline-block">
               <span className="group-hover:text-primary transition-colors">Inicio</span>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300 rounded-full"></span>
             </Link></li>
-            <li><Link href="/catalogo" className="relative group py-2 inline-block">
+            <li><Link href="/catalogo" prefetch={false} className="relative group py-2 inline-block">
               <span className="group-hover:text-primary transition-colors">Catálogo</span>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300 rounded-full"></span>
             </Link></li>
@@ -108,14 +108,14 @@ export default function Header() {
                 isMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
                 isMenuOpen && "delay-[50ms]"
               )}>
-                <Link href="/" onClick={() => setIsMenuOpen(false)} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Inicio</Link>
+                <Link href="/" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Inicio</Link>
               </li>
               <li className={cn(
                 "transform transition-all duration-300 ease-out",
                 isMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
                 isMenuOpen && "delay-[100ms]"
               )}>
-                <Link href="/catalogo" onClick={() => setIsMenuOpen(false)} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Catálogo</Link>
+                <Link href="/catalogo" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Catálogo</Link>
               </li>
               <li className={cn(
                 "transform transition-all duration-300 ease-out",
