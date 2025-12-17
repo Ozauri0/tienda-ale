@@ -23,18 +23,18 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section id="nosotros" className="py-24 bg-background">
+    <section id="nosotros" className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="text-center mb-16 fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Lo Que Dicen Nuestros Clientes</h2>
-          <p className="text-muted-foreground text-lg">La satisfacción de nuestros clientes es nuestra mejor carta de presentación</p>
+        <div className="text-center mb-12 md:mb-16 fade-in">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">Lo Que Dicen Nuestros Clientes</h2>
+          <p className="text-muted-foreground text-base md:text-lg">La satisfacción de nuestros clientes es nuestra mejor carta de presentación</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {testimonials.map((testimonial, index) => (
             <div 
               key={testimonial.id} 
-              className="bg-card p-8 border border-border rounded-3xl shadow-md hover:shadow-2xl transition-all duration-300 hover:scale-105 scale-in"
+              className="bg-card p-6 md:p-8 border border-border rounded-2xl md:rounded-3xl shadow-md hover:shadow-2xl transition-all duration-300 hover:scale-105 scale-in"
               style={{ animationDelay: `${index * 150}ms` }}
             >
               <div className="flex gap-1 mb-4">
