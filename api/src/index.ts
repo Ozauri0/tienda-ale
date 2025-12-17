@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/database';
+import authRoutes from './routes/authRoutes';
 
 // Cargar variables de entorno
 dotenv.config();
@@ -26,9 +27,18 @@ app.get('/', (req: Request, res: Response) => {
     version: '1.0.0',
     endpoints: {
       health: '/api/health',
-      auth: '/api/auth (pendiente)',
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        profile: 'GET /api/auth/me (requiere token)',
+      },
       products: '/api/products (pendiente)',
       cart: '/api/cart (pendiente)',
+    },
+    roles: {
+      usuario: 'Usuario estándar',
+      administrador: 'Administrador (jerarquía 2)',
+      dueno: 'Dueño (jerarquía 3 - máxima)',
     },
   });
 });
@@ -41,8 +51,9 @@ app.get('/api/health', (req: Request, res: Response) => {
   });
 });
 
-// TODO: Importar y usar rutas
-// app.use('/api/auth', authRoutes);
+// Rutas
+app.use('/api/auth', authRoutes);
+// TODO: Importar y usar más rutas
 // app.use('/api/products', productRoutes);
 // app.use('/api/cart', cartRoutes);
 
