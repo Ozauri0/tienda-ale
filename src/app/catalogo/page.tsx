@@ -5,6 +5,7 @@ import { Search, SlidersHorizontal, Grid3x3, List } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import ScrollToTop from '@/components/ScrollToTop';
 
 // Datos de productos expandidos
 const allProducts = [
@@ -254,6 +255,7 @@ export default function CatalogoPage() {
         </div>
       </div>
       <Footer />
+      <ScrollToTop />
     </>
   );
 }
