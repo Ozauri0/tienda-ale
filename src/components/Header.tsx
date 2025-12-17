@@ -6,7 +6,7 @@ import * as React from 'react';
 import { Search, ShoppingBag, Menu, X } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 import { cn } from '@/lib/utils';
-import { smoothScrollTo } from '@/lib/scroll';
+import { navigateToSection } from '@/lib/scroll';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,23 +53,19 @@ export default function Header() {
           
           {/* Menu Desktop */}
           <ul className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium">
-            <li><button onClick={() => smoothScrollTo('inicio')} className="relative group py-2 inline-block">
+            <li><Link href="/" className="relative group py-2 inline-block">
               <span className="group-hover:text-primary transition-colors">Inicio</span>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300 rounded-full"></span>
-            </button></li>
+            </Link></li>
             <li><Link href="/catalogo" className="relative group py-2 inline-block">
               <span className="group-hover:text-primary transition-colors">Catálogo</span>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300 rounded-full"></span>
             </Link></li>
-            <li><button onClick={() => smoothScrollTo('colecciones')} className="relative group py-2 inline-block">
-              <span className="group-hover:text-primary transition-colors">Categorías</span>
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300 rounded-full"></span>
-            </button></li>
-            <li><button onClick={() => smoothScrollTo('nosotros')} className="relative group py-2 inline-block">
+            <li><button onClick={() => navigateToSection('nosotros')} className="relative group py-2 inline-block">
               <span className="group-hover:text-primary transition-colors">Nosotros</span>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300 rounded-full"></span>
             </button></li>
-            <li><button onClick={() => smoothScrollTo('contacto')} className="relative group py-2 inline-block">
+            <li><button onClick={() => navigateToSection('contacto')} className="relative group py-2 inline-block">
               <span className="group-hover:text-primary transition-colors">Contacto</span>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300 rounded-full"></span>
             </button></li>
@@ -112,7 +108,7 @@ export default function Header() {
                 isMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
                 isMenuOpen && "delay-[50ms]"
               )}>
-                <button onClick={() => { smoothScrollTo('inicio'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Inicio</button>
+                <Link href="/" onClick={() => setIsMenuOpen(false)} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Inicio</Link>
               </li>
               <li className={cn(
                 "transform transition-all duration-300 ease-out",
@@ -126,21 +122,14 @@ export default function Header() {
                 isMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
                 isMenuOpen && "delay-[150ms]"
               )}>
-                <button onClick={() => { smoothScrollTo('colecciones'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Categorías</button>
+                <button onClick={() => { navigateToSection('nosotros'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Nosotros</button>
               </li>
               <li className={cn(
                 "transform transition-all duration-300 ease-out",
                 isMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
                 isMenuOpen && "delay-[200ms]"
               )}>
-                <button onClick={() => { smoothScrollTo('nosotros'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Nosotros</button>
-              </li>
-              <li className={cn(
-                "transform transition-all duration-300 ease-out",
-                isMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
-                isMenuOpen && "delay-[250ms]"
-              )}>
-                <button onClick={() => { smoothScrollTo('contacto'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Contacto</button>
+                <button onClick={() => { navigateToSection('contacto'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Contacto</button>
               </li>
             </ul>
             
