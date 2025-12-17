@@ -26,6 +26,7 @@ export interface IUser extends Document {
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+  nombreCompleto: string; // Virtual
   comparePassword(candidatePassword: string): Promise<boolean>;
   hasRoleOrHigher(requiredRole: UserRole): boolean;
 }
@@ -95,19 +96,14 @@ userSchema.index({ email: 1 });
 userSchema.index({ rut: 1 });
 
 // Middleware: Hash password antes de guardar
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   // Solo hashear si la contraseña ha sido modificada
   if (!this.isModified('password')) {
-    return next();
+    return;
   }
 
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error: any) {
-    next(error);
-  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 // Método: Comparar contraseña
@@ -121,7 +117,7 @@ userSchema.methods.comparePassword = async function (
 userSchema.methods.hasRoleOrHigher = function (
   requiredRole: UserRole
 ): boolean {
-  return roleHierarchy[this.role] >= roleHierarchy[requiredRole];
+  return roleHierarchy[this.role as UserRole] >= roleHierarchy[requiredRole];
 };
 
 // Virtual: Nombre completo
@@ -134,8 +130,8 @@ userSchema.virtual('nombreCompleto').get(function () {
 // Configurar virtuals en JSON
 userSchema.set('toJSON', {
   virtuals: true,
-  transform: function (doc, ret) {
-    delete ret.password;
+  transform: function (_doc, ret) {
+    delete (ret as any).password;
     return ret;
   },
 });

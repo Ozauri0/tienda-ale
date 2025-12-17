@@ -3,27 +3,36 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import * as React from 'react';
-import { Search, ShoppingBag, Menu, X } from 'lucide-react';
+import { Search, ShoppingBag, Menu, X, User, LogOut } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 import { cn } from '@/lib/utils';
 import { navigateToSection } from '@/lib/scroll';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
+  const userMenuRef = React.useRef<HTMLDivElement>(null);
+  const { user, logout, isAuthenticated } = useAuth();
 
   // Cerrar menú al hacer clic/touch fuera
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       const target = event.target as Node;
       
-      // Verificar si el clic/tap fue fuera del menú
+      // Verificar si el clic/tap fue fuera del menú móvil
       if (menuRef.current && !menuRef.current.contains(target)) {
         setIsMenuOpen(false);
       }
+      
+      // Verificar si el clic/tap fue fuera del menú de usuario
+      if (userMenuRef.current && !userMenuRef.current.contains(target)) {
+        setIsUserMenuOpen(false);
+      }
     };
 
-    if (isMenuOpen) {
+    if (isMenuOpen || isUserMenuOpen) {
       // Pequeño delay para evitar que se cierre inmediatamente al abrir
       const timeoutId = setTimeout(() => {
         document.addEventListener('click', handleClickOutside, true);
@@ -36,7 +45,7 @@ export default function Header() {
         document.removeEventListener('touchstart', handleClickOutside, true);
       };
     }
-  }, [isMenuOpen]);
+  }, [isMenuOpen, isUserMenuOpen]);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border shadow-sm transition-all duration-300">
@@ -83,6 +92,49 @@ export default function Header() {
               <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-full shadow-lg animate-pulse text-[10px] sm:text-xs">0</span>
             </button>
+            
+            {/* Usuario autenticado o botones de login/registro */}
+            {isAuthenticated && user ? (
+              <div className="hidden lg:block relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium hover:bg-secondary border border-border/50 rounded-full transition-all duration-300 hover:scale-105"
+                >
+                  <User className="w-4 h-4" />
+                  <span>{user.nombre} {user.apellidoPaterno}</span>
+                </button>
+                
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 border-2 border-border rounded-xl shadow-xl overflow-hidden z-50" style={{ backgroundColor: 'hsl(var(--background))' }}>
+                    <div className="p-3 border-b border-border" style={{ backgroundColor: 'hsl(var(--card))' }}>
+                      <p className="text-sm font-medium">{user.nombreCompleto}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setIsUserMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors text-left text-red-600 dark:text-red-400"
+                      style={{ backgroundColor: 'hsl(var(--background))' }}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Cerrar Sesión
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link href="/login" prefetch={false} className="hidden lg:inline-flex px-4 py-2 text-sm font-medium hover:bg-secondary border border-border/50 rounded-full transition-all duration-300 hover:scale-105">
+                  Iniciar Sesión
+                </Link>
+                <Link href="/registro" prefetch={false} className="hidden lg:inline-flex px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-full transition-all duration-300 hover:scale-105 hover:bg-primary/90">
+                  Registrarse
+                </Link>
+              </>
+            )}
+            
             {/* Menu Mobile Toggle */}
             <button 
               className="lg:hidden p-2 hover:bg-secondary border border-border/50 rounded-full transition-all duration-300" 
@@ -133,6 +185,46 @@ export default function Header() {
               </li>
             </ul>
             
+            {/* Usuario autenticado o botones de autenticación mobile */}
+            {isAuthenticated && user ? (
+              <div className={cn(
+                "mt-4 space-y-2 transform transition-all duration-300 ease-out",
+                isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
+                isMenuOpen && "delay-[250ms]"
+              )}>
+                <div className="px-4 py-3 bg-secondary rounded-xl">
+                  <div className="flex items-center gap-2 mb-1">
+                    <User className="w-4 h-4" />
+                    <p className="text-sm font-medium">{user.nombre} {user.apellidoPaterno}</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-red-200 dark:border-red-900 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 transition-all active:scale-95 font-medium text-red-600 dark:text-red-400"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Cerrar Sesión
+                </button>
+              </div>
+            ) : (
+              <div className={cn(
+                "mt-4 space-y-2 transform transition-all duration-300 ease-out",
+                isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
+                isMenuOpen && "delay-[250ms]"
+              )}>
+                <Link href="/login" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-center px-4 py-3 border border-border rounded-xl hover:bg-secondary transition-all active:scale-95 font-medium">
+                  Iniciar Sesión
+                </Link>
+                <Link href="/registro" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-center px-4 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all active:scale-95 font-medium">
+                  Registrarse
+                </Link>
+              </div>
+            )}
+
             {/* Acciones mobile adicionales */}
             <div className={cn(
               "mt-4 pt-4 border-t border-border flex items-center justify-center gap-3 transform transition-all duration-300 ease-out",

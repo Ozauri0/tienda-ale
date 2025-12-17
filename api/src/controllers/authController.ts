@@ -7,19 +7,23 @@ import { validateRUT, cleanRUT } from '../utils/rutValidator';
  * Registro de nuevo usuario
  */
 export const register = async (req: Request, res: Response): Promise<void> => {
+  const startTime = Date.now();
+  const { email, rut } = req.body;
+
   try {
     const {
       nombre,
       apellidoPaterno,
       apellidoMaterno,
-      rut,
-      email,
       password,
       role,
     } = req.body;
 
+    console.log(`[REGISTER] Intento de registro - Email: ${email}, RUT: ${rut}`);
+
     // Validar RUT
     if (!validateRUT(rut)) {
+      console.log(`[REGISTER] ❌ RUT inválido - RUT: ${rut}, Email: ${email}`);
       res.status(400).json({
         status: 'error',
         message: 'RUT inválido',
@@ -36,6 +40,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     });
 
     if (existingUser) {
+      const reason = existingUser.email === email ? 'Email ya registrado' : 'RUT ya registrado';
+      console.log(`[REGISTER] ❌ Usuario ya existe - ${reason}, Email: ${email}, RUT: ${cleanedRUT}`);
       res.status(400).json({
         status: 'error',
         message:
@@ -52,7 +58,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       // Si se intenta asignar un rol administrativo, verificar permisos
       if (req.user && req.user.role === UserRole.DUENO) {
         assignedRole = role;
+        console.log(`[REGISTER] ℹ️  Rol administrativo asignado por dueño - Role: ${role}, Admin: ${req.user.email}`);
       } else {
+        console.log(`[REGISTER] ❌ Intento de asignar rol sin permisos - Role solicitado: ${role}, Email: ${email}`);
         res.status(403).json({
           status: 'error',
           message: 'No tienes permisos para asignar este rol',
@@ -81,6 +89,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       role: user.role,
     });
 
+    const duration = Date.now() - startTime;
+    console.log(`[REGISTER] ✅ Usuario registrado exitosamente - Email: ${email}, ID: ${user._id}, Role: ${assignedRole}, Duración: ${duration}ms`);
+
     res.status(201).json({
       status: 'success',
       message: 'Usuario registrado exitosamente',
@@ -99,7 +110,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       },
     });
   } catch (error: any) {
-    console.error('Error en registro:', error);
+    const duration = Date.now() - startTime;
+    console.error(`[REGISTER] ❌ Error en registro - Email: ${email}, RUT: ${rut}, Error: ${error.message}, Duración: ${duration}ms`);
     res.status(500).json({
       status: 'error',
       message: 'Error al registrar usuario',
@@ -112,11 +124,17 @@ export const register = async (req: Request, res: Response): Promise<void> => {
  * Inicio de sesión
  */
 export const login = async (req: Request, res: Response): Promise<void> => {
+  const startTime = Date.now();
+  const { email } = req.body;
+
   try {
-    const { email, password } = req.body;
+    const { password } = req.body;
+
+    console.log(`[LOGIN] Intento de inicio de sesión - Email: ${email}`);
 
     // Validar campos
     if (!email || !password) {
+      console.log(`[LOGIN] ❌ Campos faltantes - Email: ${email}`);
       res.status(400).json({
         status: 'error',
         message: 'Email y contraseña son requeridos',
@@ -128,6 +146,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
+      console.log(`[LOGIN] ❌ Usuario no encontrado - Email: ${email}`);
       res.status(401).json({
         status: 'error',
         message: 'Credenciales inválidas',
@@ -137,6 +156,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     // Verificar si el usuario está activo
     if (!user.isActive) {
+      console.log(`[LOGIN] ❌ Usuario inactivo - Email: ${email}, ID: ${user._id}`);
       res.status(401).json({
         status: 'error',
         message: 'Usuario inactivo',
@@ -148,6 +168,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const isPasswordValid = await user.comparePassword(password);
 
     if (!isPasswordValid) {
+      console.log(`[LOGIN] ❌ Contraseña incorrecta - Email: ${email}, ID: ${user._id}`);
       res.status(401).json({
         status: 'error',
         message: 'Credenciales inválidas',
@@ -161,6 +182,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       email: user.email,
       role: user.role,
     });
+
+    const duration = Date.now() - startTime;
+    console.log(`[LOGIN] ✅ Inicio de sesión exitoso - Email: ${email}, ID: ${user._id}, Role: ${user.role}, Duración: ${duration}ms`);
 
     res.json({
       status: 'success',
@@ -180,7 +204,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       },
     });
   } catch (error: any) {
-    console.error('Error en login:', error);
+    const duration = Date.now() - startTime;
+    console.error(`[LOGIN] ❌ Error en login - Email: ${email}, Error: ${error.message}, Duración: ${duration}ms`);
     res.status(500).json({
       status: 'error',
       message: 'Error al iniciar sesión',

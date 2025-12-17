@@ -9,13 +9,13 @@ interface TokenPayload {
 
 export const generateToken = (payload: TokenPayload): string => {
   const secret = process.env.JWT_SECRET;
-  const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
+  const expiresIn: string | number = process.env.JWT_EXPIRES_IN || '7d';
 
   if (!secret) {
     throw new Error('JWT_SECRET no está definido en las variables de entorno');
   }
 
-  return jwt.sign(payload, secret, { expiresIn });
+  return jwt.sign(payload, secret, { expiresIn } as jwt.SignOptions);
 };
 
 export const verifyToken = (token: string): TokenPayload => {
