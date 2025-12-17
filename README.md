@@ -227,10 +227,3 @@ JWT_EXPIRE=7d
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 ```
 
-## 🤝 Contribución
-
-Este es un proyecto en desarrollo. Las contribuciones son bienvenidas.
-
-## 📄 Licencia
-
-Este proyecto es privado y pertenece a Alex.

@@ -113,7 +113,7 @@ export default function FeaturedProducts() {
         </div>
         
         <div className="text-center mt-12 fade-in">
-          <Link href="#" className="inline-flex items-center justify-center px-8 py-3 border-2 border-border bg-card text-foreground font-medium rounded-full hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 hover:scale-105 shadow-md hover:shadow-xl">
+          <Link href="/catalogo" className="inline-flex items-center justify-center px-8 py-3 border-2 border-border bg-card text-foreground font-medium rounded-full hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 hover:scale-105 shadow-md hover:shadow-xl">
             Ver Todo el Catálogo
           </Link>
         </div>
