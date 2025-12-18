@@ -1,13 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, SlidersHorizontal, Grid3x3, List } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
+import { API_ENDPOINTS } from '@/lib/api';
 
-// Datos de productos expandidos
+interface Product {
+  _id: string;
+  nombre: string;
+  descripcion: string;
+  sku: string;
+  precio: number;
+  precioOferta?: number;
+  stock: number;
+  imagen?: string;
+  categoria: string;
+  isActive: boolean;
+}
+
+// Datos de productos expandidos (fallback)
 const allProducts = [
   {
     id: 1,
@@ -122,12 +136,42 @@ export default function CatalogoPage() {
   const [selectedCategory, setSelectedCategory] = useState('todos');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [apiCategories, setApiCategories] = useState<string[]>([]);
+
+  // Cargar productos desde la API
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(API_ENDPOINTS.PRODUCTS);
+      const result = await response.json();
+      
+      if (response.ok && result.data && result.data.products && Array.isArray(result.data.products)) {
+        // Filtrar solo productos activos (isActive: true)
+        const activeProducts = result.data.products.filter((p: Product) => p.isActive);
+        setProducts(activeProducts);
+        
+        // Extraer categorías únicas
+        const uniqueCategories = Array.from(new Set(activeProducts.map((p: Product) => p.categoria)));
+        setApiCategories(uniqueCategories as string[]);
+      }
+    } catch (error) {
+      console.error('Error al cargar productos:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Filtrar productos
-  const filteredProducts = allProducts.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'todos' || product.category === selectedCategory;
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'todos' || product.categoria === selectedCategory;
     
     return matchesSearch && matchesCategory;
   });
@@ -195,17 +239,27 @@ export default function CatalogoPage() {
             <div className="p-6 bg-card border border-border rounded-3xl animate-in fade-in slide-in-from-top-2 duration-300">
               <h3 className="text-lg font-semibold mb-4">Categorías</h3>
               <div className="flex flex-wrap gap-2">
-                {categories.map(category => (
+                <button
+                  onClick={() => setSelectedCategory('todos')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    selectedCategory === 'todos'
+                      ? 'bg-primary text-primary-foreground shadow-lg'
+                      : 'bg-secondary hover:bg-secondary/80'
+                  }`}
+                >
+                  Todos
+                </button>
+                {apiCategories.map(category => (
                   <button
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                      selectedCategory === category.id
+                      selectedCategory === category
                         ? 'bg-primary text-primary-foreground shadow-lg'
                         : 'bg-secondary hover:bg-secondary/80'
                     }`}
                   >
-                    {category.name}
+                    {category}
                   </button>
                 ))}
               </div>
@@ -220,17 +274,31 @@ export default function CatalogoPage() {
           </p>
         </div>
 
-        {/* Grid de productos */}
-        {filteredProducts.length > 0 ? (
+        {/* Loading state */}
+        {isLoading ? (
+          <div className="flex justify-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        ) : filteredProducts.length > 0 ? (
           <div className={
             viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
-              : 'space-y-6'
+              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6'
+              : 'space-y-4'
           }>
             {filteredProducts.map((product, index) => (
               <ProductCard
-                key={product.id}
-                product={product}
+                key={product._id}
+                product={{
+                  id: parseInt(product._id.slice(-4), 16) || index,
+                  name: product.nombre,
+                  description: product.descripcion,
+                  price: product.precioOferta && product.precioOferta > 0 && product.precioOferta < product.precio ? product.precioOferta : product.precio,
+                  originalPrice: product.precioOferta && product.precioOferta > 0 && product.precioOferta < product.precio ? product.precio : undefined,
+                  image: product.imagen || '/images/product-placeholder.jpg',
+                  badge: product.precioOferta && product.precioOferta > 0 && product.precioOferta < product.precio ? `${Math.round(((product.precio - product.precioOferta) / product.precio) * 100)}% OFF` : undefined,
+                  category: product.categoria,
+                  stock: product.stock > 0,
+                }}
                 viewMode={viewMode}
                 index={index}
               />

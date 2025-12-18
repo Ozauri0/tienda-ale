@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from 'next-themes';
 import { Search, Plus, Edit, Trash2, RefreshCw, X, Save, Package, Eye, EyeOff, Grid3x3, List } from 'lucide-react';
+import { API_ENDPOINTS } from '@/lib/api';
 
 interface Product {
   _id: string;
@@ -65,7 +66,7 @@ export default function ProductManagement({ userRole }: ProductManagementProps) 
     setError('');
     
     try {
-      const response = await fetch('http://localhost:3001/api/products');
+      const response = await fetch(API_ENDPOINTS.PRODUCTS);
       const data = await response.json();
 
       if (!response.ok) {
@@ -157,8 +158,8 @@ export default function ProductManagement({ userRole }: ProductManagementProps) 
 
     try {
       const url = editingProduct
-        ? `http://localhost:3001/api/products/${editingProduct._id}`
-        : 'http://localhost:3001/api/products';
+        ? API_ENDPOINTS.PRODUCT_BY_ID(editingProduct._id)
+        : API_ENDPOINTS.PRODUCTS;
       
       const method = editingProduct ? 'PUT' : 'POST';
 
@@ -192,7 +193,7 @@ export default function ProductManagement({ userRole }: ProductManagementProps) 
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/api/products/${productId}`, {
+      const response = await fetch(API_ENDPOINTS.PRODUCT_BY_ID(productId), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -213,7 +214,7 @@ export default function ProductManagement({ userRole }: ProductManagementProps) 
 
   const handleToggleVisibility = async (productId: string) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/products/${productId}/toggle-visibility`, {
+      const response = await fetch(API_ENDPOINTS.TOGGLE_PRODUCT_VISIBILITY(productId), {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -121,7 +121,7 @@ export default function PerfilPage() {
         dataToSend.newPassword = formData.newPassword;
       }
 
-      const response = await fetch('http://localhost:3001/api/auth/profile', {
+      const response = await fetch(API_ENDPOINTS.PROFILE, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

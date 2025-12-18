@@ -46,7 +46,7 @@ export default function UserManagement({ userRole }: UserManagementProps) {
     setError('');
     
     try {
-      const response = await fetch('http://localhost:3001/api/users', {
+      const response = await fetch(API_ENDPOINTS.USERS, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -93,7 +93,7 @@ export default function UserManagement({ userRole }: UserManagementProps) {
 
   const handleToggleStatus = async (userId: string, currentStatus: boolean) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/users/${userId}`, {
+      const response = await fetch(API_ENDPOINTS.USER_BY_ID(userId), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ export default function UserManagement({ userRole }: UserManagementProps) {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/api/users/${userId}`, {
+      const response = await fetch(API_ENDPOINTS.USER_BY_ID(userId), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
