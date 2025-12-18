@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/database';
 import authRoutes from './routes/authRoutes';
+import productRoutes from './routes/productRoutes';
+import userRoutes from './routes/userRoutes';
 
 // Cargar variables de entorno
 dotenv.config();
@@ -31,8 +33,21 @@ app.get('/', (req: Request, res: Response) => {
         register: 'POST /api/auth/register',
         login: 'POST /api/auth/login',
         profile: 'GET /api/auth/me (requiere token)',
+        updateProfile: 'PUT /api/auth/profile (requiere token)',
       },
-      products: '/api/products (pendiente)',
+      products: {
+        list: 'GET /api/products',
+        getById: 'GET /api/products/:id',
+        create: 'POST /api/products (requiere Admin o Dueño)',
+        update: 'PUT /api/products/:id (requiere Admin o Dueño)',
+        delete: 'DELETE /api/products/:id (requiere Admin o Dueño)',
+      },
+      users: {
+        list: 'GET /api/users (requiere Admin o Dueño)',
+        getById: 'GET /api/users/:id (requiere Admin o Dueño)',
+        update: 'PUT /api/users/:id (requiere Admin o Dueño)',
+        delete: 'DELETE /api/users/:id (Admin: solo usuarios / Dueño: todos)',
+      },
       cart: '/api/cart (pendiente)',
     },
     roles: {
@@ -53,8 +68,9 @@ app.get('/api/health', (req: Request, res: Response) => {
 
 // Rutas
 app.use('/api/auth', authRoutes);
-// TODO: Importar y usar más rutas
-// app.use('/api/products', productRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
+// TODO: Implementar más rutas
 // app.use('/api/cart', cartRoutes);
 
 // Manejo de rutas no encontradas
