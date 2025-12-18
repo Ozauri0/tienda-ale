@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from 'next-themes';
-import { Search, Plus, Edit, Trash2, RefreshCw, X, Save, Package, Eye, EyeOff } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, RefreshCw, X, Save, Package, Eye, EyeOff, Grid3x3, List } from 'lucide-react';
 
 interface Product {
   _id: string;
@@ -32,6 +32,7 @@ export default function ProductManagement({ userRole }: ProductManagementProps) 
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [error, setError] = useState('');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   
   // Determinar si estamos en modo oscuro
   const isDark = resolvedTheme === 'dark' || theme === 'dark';
@@ -274,17 +275,45 @@ export default function ProductManagement({ userRole }: ProductManagementProps) 
           </button>
         </div>
 
-        {/* Filtro de categoría */}
-        <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="w-full sm:w-64 px-3 py-2 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-        >
-          <option value="all">Todas las categorías</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
+        {/* Filtro de categoría y vista */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="flex-1 sm:w-64 px-3 py-2 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+          >
+            <option value="all">Todas las categorías</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+
+          {/* Toggle de vista */}
+          <div className="flex gap-2 bg-secondary/50 rounded-xl p-1">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
+                viewMode === 'grid' 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'hover:bg-secondary'
+              }`}
+            >
+              <Grid3x3 className="w-4 h-4" />
+              <span className="hidden sm:inline">Cuadrícula</span>
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
+                viewMode === 'list' 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'hover:bg-secondary'
+              }`}
+            >
+              <List className="w-4 h-4" />
+              <span className="hidden sm:inline">Lista</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Error */}
@@ -315,93 +344,174 @@ export default function ProductManagement({ userRole }: ProductManagementProps) 
       </div>
 
       {/* Lista de productos */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredProducts.length === 0 ? (
-          <div className="col-span-full text-center py-12 text-muted-foreground">
-            No se encontraron productos
-          </div>
-        ) : (
-          filteredProducts.map((product) => (
-            <div
-              key={product._id}
-              className={`bg-secondary/30 border border-border rounded-xl p-4 hover:bg-secondary/50 transition-colors relative ${!product.isActive ? 'opacity-50' : ''}`}
-            >
-              {!product.isActive && (
-                <div className="absolute top-2 right-2 bg-yellow-600/90 text-white text-xs font-semibold px-2 py-1 rounded-lg z-10">
-                  OCULTO
-                </div>
-              )}
-              {/* Imagen */}
-              <div className="w-full h-32 bg-secondary rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
-                {product.precioOferta && product.precioOferta > 0 && product.precioOferta < product.precio && (
-                  <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-lg z-10">
-                    -{Math.round(((product.precio - product.precioOferta) / product.precio) * 100)}% OFERTA
-                  </div>
-                )}
-                {product.imagen ? (
-                  <img src={product.imagen} alt={product.nombre} className="w-full h-full object-cover" />
-                ) : (
-                  <Package className="w-12 h-12 text-muted-foreground" />
-                )}
-              </div>
-
-              {/* Info */}
-              <div className="space-y-2">
-                <div>
-                  <h3 className="font-semibold truncate">{product.nombre}</h3>
-                  <p className="text-xs text-muted-foreground">SKU: {product.sku}</p>
-                </div>
-
-                <p className="text-sm text-muted-foreground line-clamp-2">{product.descripcion}</p>
-
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex flex-col">
-                    {product.precioOferta && product.precioOferta > 0 && product.precioOferta < product.precio ? (
-                      <>
-                        <span className="font-semibold text-primary">${product.precioOferta.toLocaleString()}</span>
-                        <span className="text-xs text-muted-foreground line-through">${product.precio.toLocaleString()}</span>
-                      </>
-                    ) : (
-                      <span className="font-semibold text-primary">${product.precio.toLocaleString()}</span>
-                    )}
-                  </div>
-                  <span className={`${product.stock < 10 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                    Stock: {product.stock}
-                  </span>
-                </div>
-
-                <div className="text-xs text-muted-foreground">
-                  {product.categoria}
-                </div>
-
-                {/* Acciones */}
-                <div className="flex gap-2 pt-2">
-                  <button
-                    onClick={() => handleToggleVisibility(product._id)}
-                    className="flex items-center justify-center gap-2 px-3 py-2 bg-background border border-border rounded-lg hover:bg-secondary transition-colors text-sm"
-                    title={product.isActive ? 'Ocultar producto' : 'Mostrar producto'}
-                  >
-                    {product.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                  </button>
-                  <button
-                    onClick={() => handleOpenModal(product)}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-background border border-border rounded-lg hover:bg-secondary transition-colors text-sm"
-                  >
-                    <Edit className="w-4 h-4" />
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(product._id, product.nombre)}
-                    className="flex items-center justify-center gap-2 px-3 py-2 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg hover:bg-destructive/20 transition-colors text-sm"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+      {viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredProducts.length === 0 ? (
+            <div className="col-span-full text-center py-12 text-muted-foreground">
+              No se encontraron productos
             </div>
-          ))
-        )}
-      </div>
+          ) : (
+            filteredProducts.map((product) => (
+              <div
+                key={product._id}
+                className={`bg-secondary/30 border border-border rounded-xl p-4 hover:bg-secondary/50 transition-colors relative ${!product.isActive ? 'opacity-50' : ''}`}
+              >
+                {!product.isActive && (
+                  <div className="absolute top-2 right-2 bg-yellow-600/90 text-white text-xs font-semibold px-2 py-1 rounded-lg z-10">
+                    OCULTO
+                  </div>
+                )}
+                {/* Imagen */}
+                <div className="w-full h-32 bg-secondary rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
+                  {product.precioOferta && product.precioOferta > 0 && product.precioOferta < product.precio && (
+                    <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-lg z-10">
+                      -{Math.round(((product.precio - product.precioOferta) / product.precio) * 100)}% OFERTA
+                    </div>
+                  )}
+                  {product.imagen ? (
+                    <img src={product.imagen} alt={product.nombre} className="w-full h-full object-cover" />
+                  ) : (
+                    <Package className="w-12 h-12 text-muted-foreground" />
+                  )}
+                </div>
+
+                {/* Info */}
+                <div className="space-y-2">
+                  <div>
+                    <h3 className="font-semibold truncate">{product.nombre}</h3>
+                    <p className="text-xs text-muted-foreground">SKU: {product.sku}</p>
+                  </div>
+
+                  <p className="text-sm text-muted-foreground line-clamp-2">{product.descripcion}</p>
+
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex flex-col">
+                      {product.precioOferta && product.precioOferta > 0 && product.precioOferta < product.precio ? (
+                        <>
+                          <span className="font-semibold text-primary">${product.precioOferta.toLocaleString()}</span>
+                          <span className="text-xs text-muted-foreground line-through">${product.precio.toLocaleString()}</span>
+                        </>
+                      ) : (
+                        <span className="font-semibold text-primary">${product.precio.toLocaleString()}</span>
+                      )}
+                    </div>
+                    <span className={`${product.stock < 10 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                      Stock: {product.stock}
+                    </span>
+                  </div>
+
+                  <div className="text-xs text-muted-foreground">
+                    {product.categoria}
+                  </div>
+
+                  {/* Acciones */}
+                  <div className="flex gap-2 pt-2">
+                    <button
+                      onClick={() => handleToggleVisibility(product._id)}
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-background border border-border rounded-lg hover:bg-secondary transition-colors text-sm"
+                      title={product.isActive ? 'Ocultar producto' : 'Mostrar producto'}
+                    >
+                      {product.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                    </button>
+                    <button
+                      onClick={() => handleOpenModal(product)}
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-background border border-border rounded-lg hover:bg-secondary transition-colors text-sm"
+                    >
+                      <Edit className="w-4 h-4" />
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product._id, product.nombre)}
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg hover:bg-destructive/20 transition-colors text-sm"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              No se encontraron productos
+            </div>
+          ) : (
+            filteredProducts.map((product) => (
+              <div
+                key={product._id}
+                className={`bg-secondary/30 border border-border rounded-xl p-4 hover:bg-secondary/50 transition-colors ${!product.isActive ? 'opacity-50' : ''}`}
+              >
+                <div className="flex items-center gap-4">
+                  {/* Estado e info principal */}
+                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-5 gap-3 items-center">
+                    <div className="sm:col-span-2">
+                      <div className="flex items-center gap-2">
+                        {!product.isActive && (
+                          <span className="bg-yellow-600/90 text-white text-xs font-semibold px-2 py-0.5 rounded">
+                            OCULTO
+                          </span>
+                        )}
+                        {product.precioOferta && product.precioOferta > 0 && product.precioOferta < product.precio && (
+                          <span className="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded">
+                            -{Math.round(((product.precio - product.precioOferta) / product.precio) * 100)}%
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="font-semibold">{product.nombre}</h3>
+                      <p className="text-xs text-muted-foreground">SKU: {product.sku}</p>
+                    </div>
+
+                    <div className="text-sm text-muted-foreground">
+                      {product.categoria}
+                    </div>
+
+                    <div className="text-sm">
+                      {product.precioOferta && product.precioOferta > 0 && product.precioOferta < product.precio ? (
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-primary">${product.precioOferta.toLocaleString()}</span>
+                          <span className="text-xs text-muted-foreground line-through">${product.precio.toLocaleString()}</span>
+                        </div>
+                      ) : (
+                        <span className="font-semibold text-primary">${product.precio.toLocaleString()}</span>
+                      )}
+                    </div>
+
+                    <div className={`text-sm ${product.stock < 10 ? 'text-destructive font-semibold' : 'text-muted-foreground'}`}>
+                      Stock: {product.stock}
+                    </div>
+                  </div>
+
+                  {/* Acciones */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleToggleVisibility(product._id)}
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-background border border-border rounded-lg hover:bg-secondary transition-colors text-sm"
+                      title={product.isActive ? 'Ocultar producto' : 'Mostrar producto'}
+                    >
+                      {product.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                    </button>
+                    <button
+                      onClick={() => handleOpenModal(product)}
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-background border border-border rounded-lg hover:bg-secondary transition-colors text-sm"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product._id, product.nombre)}
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg hover:bg-destructive/20 transition-colors text-sm"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
 
       {/* Modal */}
       {isModalOpen && (
