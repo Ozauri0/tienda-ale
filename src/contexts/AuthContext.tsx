@@ -14,6 +14,18 @@ interface User {
   role: string;
 }
 
+// Helper para obtener jerarquía de rol
+const getRoleHierarchy = (role: string): number => {
+  switch (role) {
+    case 'dueno': return 3;
+    case 'administrador': return 2;
+    case 'usuario': return 1;
+    default: return 0;
+  }
+};
+
+export { getRoleHierarchy };
+
 interface AuthContextType {
   user: User | null;
   token: string | null;

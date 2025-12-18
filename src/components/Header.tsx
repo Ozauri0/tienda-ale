@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import * as React from 'react';
-import { Search, ShoppingBag, Menu, X, User, LogOut } from 'lucide-react';
+import { Search, ShoppingBag, Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 import { cn } from '@/lib/utils';
 import { navigateToSection } from '@/lib/scroll';
@@ -120,6 +120,18 @@ export default function Header() {
                       <User className="w-4 h-4" />
                       Mi Perfil
                     </Link>
+                    {(user.role === 'administrador' || user.role === 'dueno') && (
+                      <Link
+                        href="/admin"
+                        prefetch={false}
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-secondary transition-colors text-left border-t border-border"
+                        style={{ backgroundColor: 'hsl(var(--background))' }}
+                      >
+                        <Settings className="w-4 h-4" />
+                        Panel Admin
+                      </Link>
+                    )}
                     <button
                       onClick={() => {
                         logout();
@@ -159,46 +171,46 @@ export default function Header() {
         {/* Menu Mobile */}
         <div 
           className={cn(
-            "lg:hidden overflow-hidden transition-all duration-300 ease-in-out",
+            "lg:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out",
             isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
           )}
         >
           <div className="mt-4 pb-4 border-t border-border pt-4">
             <ul className="flex flex-col gap-3 text-sm font-medium">
               <li className={cn(
-                "transform transition-all duration-300 ease-out",
+                "transform transition-[transform,opacity] duration-300 ease-out",
                 isMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
                 isMenuOpen && "delay-[50ms]"
               )}>
-                <Link href="/" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Inicio</Link>
+                <Link href="/" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-[background-color,transform] active:scale-95">Inicio</Link>
               </li>
               <li className={cn(
-                "transform transition-all duration-300 ease-out",
+                "transform transition-[transform,opacity] duration-300 ease-out",
                 isMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
                 isMenuOpen && "delay-[100ms]"
               )}>
-                <Link href="/catalogo" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Catálogo</Link>
+                <Link href="/catalogo" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-[background-color,transform] active:scale-95">Catálogo</Link>
               </li>
               <li className={cn(
-                "transform transition-all duration-300 ease-out",
+                "transform transition-[transform,opacity] duration-300 ease-out",
                 isMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
                 isMenuOpen && "delay-[150ms]"
               )}>
-                <button onClick={() => { navigateToSection('nosotros'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Nosotros</button>
+                <button onClick={() => { navigateToSection('nosotros'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-[background-color,transform] active:scale-95">Nosotros</button>
               </li>
               <li className={cn(
-                "transform transition-all duration-300 ease-out",
+                "transform transition-[transform,opacity] duration-300 ease-out",
                 isMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0",
                 isMenuOpen && "delay-[200ms]"
               )}>
-                <button onClick={() => { navigateToSection('contacto'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-all active:scale-95">Contacto</button>
+                <button onClick={() => { navigateToSection('contacto'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 hover:bg-secondary rounded-xl transition-[background-color,transform] active:scale-95">Contacto</button>
               </li>
             </ul>
             
             {/* Usuario autenticado o botones de autenticación mobile */}
             {isAuthenticated && user ? (
               <div className={cn(
-                "mt-4 space-y-2 transform transition-all duration-300 ease-out",
+                "mt-4 space-y-2 transform transition-[transform,opacity] duration-300 ease-out",
                 isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
                 isMenuOpen && "delay-[250ms]"
               )}>
@@ -213,17 +225,28 @@ export default function Header() {
                   href="/perfil"
                   prefetch={false}
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-border rounded-xl hover:bg-secondary transition-all active:scale-95 font-medium"
+                  className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-border rounded-xl hover:bg-secondary transition-[background-color,transform] active:scale-95 font-medium"
                 >
                   <User className="w-4 h-4" />
                   Mi Perfil
                 </Link>
+                {(user.role === 'administrador' || user.role === 'dueno') && (
+                  <Link
+                    href="/admin"
+                    prefetch={false}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-border rounded-xl hover:bg-secondary transition-[background-color,transform] active:scale-95 font-medium"
+                  >
+                    <Settings className="w-4 h-4" />
+                    Panel Admin
+                  </Link>
+                )}
                 <button
                   onClick={() => {
                     logout();
                     setIsMenuOpen(false);
                   }}
-                  className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-red-200 dark:border-red-900 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 transition-all active:scale-95 font-medium text-red-600 dark:text-red-400"
+                  className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-red-200 dark:border-red-900 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 transition-[background-color,transform] active:scale-95 font-medium text-red-600 dark:text-red-400"
                 >
                   <LogOut className="w-4 h-4" />
                   Cerrar Sesión
@@ -231,14 +254,14 @@ export default function Header() {
               </div>
             ) : (
               <div className={cn(
-                "mt-4 space-y-2 transform transition-all duration-300 ease-out",
+                "mt-4 space-y-2 transform transition-[transform,opacity] duration-300 ease-out",
                 isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
                 isMenuOpen && "delay-[250ms]"
               )}>
-                <Link href="/login" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-center px-4 py-3 border border-border rounded-xl hover:bg-secondary transition-all active:scale-95 font-medium">
+                <Link href="/login" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-center px-4 py-3 border border-border rounded-xl hover:bg-secondary transition-[background-color,transform] active:scale-95 font-medium">
                   Iniciar Sesión
                 </Link>
-                <Link href="/registro" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-center px-4 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all active:scale-95 font-medium">
+                <Link href="/registro" prefetch={false} onClick={() => setIsMenuOpen(false)} className="block w-full text-center px-4 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-[background-color,transform] active:scale-95 font-medium">
                   Registrarse
                 </Link>
               </div>
@@ -246,14 +269,14 @@ export default function Header() {
 
             {/* Acciones mobile adicionales */}
             <div className={cn(
-              "mt-4 pt-4 border-t border-border flex items-center justify-center gap-3 transform transition-all duration-300 ease-out",
+              "mt-4 pt-4 border-t border-border flex items-center justify-center gap-3 transform transition-[transform,opacity] duration-300 ease-out",
               isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
               isMenuOpen && "delay-[300ms]"
             )}>
               <div className="sm:hidden">
                 <ThemeToggle />
               </div>
-              <button className="sm:hidden p-2 hover:bg-secondary border border-border/50 rounded-full transition-all duration-300" aria-label="Buscar">
+              <button className="sm:hidden p-2 hover:bg-secondary border border-border/50 rounded-full transition-[background-color] duration-300" aria-label="Buscar">
                 <Search className="w-5 h-5" />
               </button>
             </div>
