@@ -8,6 +8,7 @@ import { ThemeToggle } from './theme-toggle';
 import { cn } from '@/lib/utils';
 import { navigateToSection } from '@/lib/scroll';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from 'next-themes';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,6 +16,8 @@ export default function Header() {
   const menuRef = React.useRef<HTMLDivElement>(null);
   const userMenuRef = React.useRef<HTMLDivElement>(null);
   const { user, logout, isAuthenticated } = useAuth();
+  const { theme, resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark' || theme === 'dark';
 
   // Cerrar menú al hacer clic/touch fuera
   React.useEffect(() => {
@@ -48,8 +51,13 @@ export default function Header() {
   }, [isMenuOpen, isUserMenuOpen]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border shadow-sm transition-all duration-300">
-      <nav ref={menuRef} className="container mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-4">
+    <header className="fixed top-0 left-0 right-0 z-50 shadow-lg transition-all duration-300">
+      <div 
+        className="absolute inset-0 backdrop-blur-xl backdrop-saturate-150"
+        style={{ backgroundColor: isDark ? 'rgba(10, 10, 10, 0.75)' : 'rgba(255, 255, 255, 0.75)' }}
+      ></div>
+      <div className="absolute inset-x-0 bottom-0 h-px bg-border"></div>
+      <nav ref={menuRef} className="relative container mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-4">
         <div className="flex items-center justify-between gap-2">
           {/* Logo */}
           <Link href="/" prefetch={false} className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
