@@ -77,7 +77,7 @@ export default function AdminPanel() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-6 sm:py-12 px-4">
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-6 sm:py-12 px-4 pt-24 sm:pt-28">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-6 sm:mb-8">

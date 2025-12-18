@@ -6,6 +6,7 @@ export interface IProduct extends Document {
   descripcion: string;
   sku: string;
   precio: number;
+  precioOferta?: number;
   stock: number;
   imagen?: string;
   categoria: string;
@@ -41,6 +42,10 @@ const productSchema = new Schema<IProduct>(
       required: [true, 'El precio es requerido'],
       min: [0, 'El precio debe ser mayor o igual a 0'],
     },
+    precioOferta: {
+      type: Number,
+      min: [0, 'El precio de oferta debe ser mayor o igual a 0'],
+    },
     stock: {
       type: Number,
       required: [true, 'El stock es requerido'],
@@ -58,7 +63,7 @@ const productSchema = new Schema<IProduct>(
     },
     isActive: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   {

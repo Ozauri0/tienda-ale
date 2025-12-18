@@ -80,7 +80,7 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
   const startTime = Date.now();
   
   try {
-    const { nombre, descripcion, sku, precio, stock, imagen, categoria } = req.body;
+    const { nombre, descripcion, sku, precio, precioOferta, stock, imagen, categoria } = req.body;
     
     console.log(`[CREATE_PRODUCT] Intento de creación - SKU: ${sku}, Usuario: ${req.user?.userId}`);
     
@@ -101,6 +101,7 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
       descripcion,
       sku,
       precio,
+      precioOferta: precioOferta || undefined,
       stock: stock || 0,
       imagen,
       categoria,
@@ -133,7 +134,7 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
   
   try {
     const { id } = req.params;
-    const { nombre, descripcion, sku, precio, stock, imagen, categoria, isActive } = req.body;
+    const { nombre, descripcion, sku, precio, precioOferta, stock, imagen, categoria, isActive } = req.body;
     
     console.log(`[UPDATE_PRODUCT] Intento de actualización - ID: ${id}, Usuario: ${req.user?.userId}`);
     
@@ -166,6 +167,7 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
     if (descripcion) product.descripcion = descripcion;
     if (sku) product.sku = sku;
     if (precio !== undefined) product.precio = precio;
+    if (precioOferta !== undefined) product.precioOferta = precioOferta || undefined;
     if (stock !== undefined) product.stock = stock;
     if (imagen !== undefined) product.imagen = imagen;
     if (categoria) product.categoria = categoria;
@@ -187,6 +189,50 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       status: 'error',
       message: 'Error al actualizar producto',
+      details: error.message,
+    });
+  }
+};
+
+/**
+ * Cambiar visibilidad del producto (Admin y Dueño)
+ */
+export const toggleProductVisibility = async (req: Request, res: Response): Promise<void> => {
+  const startTime = Date.now();
+  
+  try {
+    const { id } = req.params;
+    
+    console.log(`[TOGGLE_VISIBILITY] Intento de cambio de visibilidad - ID: ${id}, Usuario: ${req.user?.userId}`);
+    
+    const product = await Product.findById(id);
+    
+    if (!product) {
+      console.log(`[TOGGLE_VISIBILITY] ❌ Producto no encontrado - ID: ${id}`);
+      res.status(404).json({
+        status: 'error',
+        message: 'Producto no encontrado',
+      });
+      return;
+    }
+    
+    product.isActive = !product.isActive;
+    await product.save();
+    
+    const duration = Date.now() - startTime;
+    console.log(`[TOGGLE_VISIBILITY] ✅ Visibilidad cambiada - ID: ${id}, isActive: ${product.isActive}, Duration: ${duration}ms`);
+    
+    res.json({
+      status: 'success',
+      message: `Producto ${product.isActive ? 'visible' : 'oculto'} exitosamente`,
+      data: { product },
+    });
+  } catch (error: any) {
+    const duration = Date.now() - startTime;
+    console.error(`[TOGGLE_VISIBILITY] ❌ Error al cambiar visibilidad - Duration: ${duration}ms`, error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Error al cambiar visibilidad del producto',
       details: error.message,
     });
   }

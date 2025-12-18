@@ -34,7 +34,7 @@ export default function Hero() {
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </button>
             <button onClick={() => smoothScrollTo('contacto')} className="inline-flex items-center justify-center px-8 py-4 border-2 border-border bg-card text-foreground font-medium rounded-full hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 hover:scale-105">
-              Solicitar Asesoría
+              Solicitar Cotización
             </button>
           </div>
 

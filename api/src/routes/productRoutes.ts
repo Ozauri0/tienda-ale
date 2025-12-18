@@ -4,6 +4,7 @@ import {
   getProductById,
   createProduct,
   updateProduct,
+  toggleProductVisibility,
   deleteProduct,
 } from '../controllers/productController';
 import { authenticate, authorize } from '../middlewares/auth';
@@ -93,6 +94,18 @@ router.put(
   productValidation,
   handleValidationErrors,
   updateProduct
+);
+
+/**
+ * @route   PATCH /api/products/:id/toggle-visibility
+ * @desc    Alternar visibilidad del producto (ocultar/mostrar)
+ * @access  Protected (Admin y Dueño)
+ */
+router.patch(
+  '/:id/toggle-visibility',
+  authenticate,
+  authorize(UserRole.ADMINISTRADOR, UserRole.DUENO),
+  toggleProductVisibility
 );
 
 /**
