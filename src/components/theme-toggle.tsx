@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Moon, Sun, Palette } from 'lucide-react';
+import { Moon, Sun, Monitor } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
 
@@ -54,18 +54,18 @@ export function ThemeToggle() {
         )}
       </button>
       <button
-        onClick={() => setTheme('ocean')}
+        onClick={() => setTheme('system')}
         className={cn(
           'p-2 rounded-full transition-all duration-300 relative',
-          theme === 'ocean'
+          theme === 'system'
             ? 'bg-background text-foreground shadow-lg scale-105'
             : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
         )}
-        aria-label="Tema océano"
-        title="Tema océano"
+        aria-label="Tema del sistema"
+        title="Tema del sistema"
       >
-        <Palette className="h-4 w-4" />
-        {theme === 'ocean' && (
+        <Monitor className="h-4 w-4" />
+        {theme === 'system' && (
           <span className="absolute inset-0 rounded-full bg-primary/20 animate-pulse" />
         )}
       </button>

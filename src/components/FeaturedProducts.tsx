@@ -8,27 +8,27 @@ import { useState } from 'react';
 const products = [
   {
     id: 1,
-    name: 'Set de Velas Aromáticas',
-    description: 'Aromas naturales premium',
-    price: 89,
+    name: 'Set Bloques Didácticos',
+    description: 'Desarrollo psicomotriz y creatividad',
+    price: 45990,
     image: '/images/product-1.jpg',
     badge: 'Nuevo',
   },
   {
     id: 2,
-    name: 'Jarrón Decorativo',
-    description: 'Cerámica artesanal única',
-    price: 156,
+    name: 'Kit de Ciencias Pre-escolar',
+    description: 'Aprendizaje a través del juego',
+    price: 67990,
     image: '/images/product-2.jpg',
     badge: 'Popular',
   },
   {
     id: 3,
-    name: 'Set de Difusores',
-    description: 'Fragancias exclusivas',
-    price: 124,
+    name: 'Mesa Sensorial Montessori',
+    description: 'Estimulación sensorial completa',
+    price: 189990,
     image: '/images/product-3.jpg',
-    badge: 'Exclusivo',
+    badge: 'Destacado',
   },
 ];
 
@@ -45,9 +45,9 @@ export default function FeaturedProducts() {
     <section id="productos" className="py-24 bg-background">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="text-center mb-16 fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Productos Destacados</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">Productos Educativos Destacados</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Descubre artículos únicos cuidadosamente seleccionados para elevar tu espacio
+            Material didáctico de calidad certificada para el desarrollo integral de niños y niñas
           </p>
         </div>
         
@@ -100,11 +100,11 @@ export default function FeaturedProducts() {
                 <p className="text-muted-foreground text-sm">{product.description}</p>
                 <div className="flex items-center justify-between pt-3">
                   <span className="text-3xl font-bold text-primary">
-                    ${product.price}
+                    ${product.price.toLocaleString('es-CL')}
                   </span>
                   <button className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300">
                     <ShoppingCart className="w-4 h-4" />
-                    Agregar
+                    Cotizar
                   </button>
                 </div>
               </div>
@@ -113,8 +113,8 @@ export default function FeaturedProducts() {
         </div>
         
         <div className="text-center mt-12 fade-in">
-          <Link href="#" className="inline-flex items-center justify-center px-8 py-3 border-2 border-border bg-card text-foreground font-medium rounded-full hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 hover:scale-105 shadow-md hover:shadow-xl">
-            Ver Toda la Colección
+          <Link href="/catalogo" className="inline-flex items-center justify-center px-8 py-3 border-2 border-border bg-card text-foreground font-medium rounded-full hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 hover:scale-105 shadow-md hover:shadow-xl">
+            Ver Todo el Catálogo
           </Link>
         </div>
       </div>

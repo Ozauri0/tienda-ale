@@ -5,10 +5,13 @@ import Features from '@/components/Features';
 import Testimonials from '@/components/Testimonials';
 import Newsletter from '@/components/Newsletter';
 import Footer from '@/components/Footer';
+import ScrollHandler from '@/components/ScrollHandler';
+import ScrollToTop from '@/components/ScrollToTop';
 
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <ScrollHandler />
       <Header />
       <main>
         <Hero />
@@ -18,6 +21,7 @@ export default function Home() {
         <Newsletter />
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   );
 }

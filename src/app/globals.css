@@ -46,39 +46,92 @@
     --ring: 0 0% 83%;
   }
 
-  .ocean {
-    --background: 200 20% 98%;
-    --foreground: 200 50% 10%;
-    --card: 200 20% 100%;
-    --card-foreground: 200 50% 10%;
-    --popover: 200 20% 100%;
-    --popover-foreground: 200 50% 10%;
-    --primary: 200 70% 45%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 200 20% 90%;
-    --secondary-foreground: 200 50% 10%;
-    --muted: 200 20% 90%;
-    --muted-foreground: 200 30% 40%;
-    --accent: 180 60% 85%;
-    --accent-foreground: 200 50% 10%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 200 20% 85%;
-    --input: 200 20% 85%;
-    --ring: 200 70% 45%;
-  }
-
   * {
     border-color: hsl(var(--border));
   }
 
   body {
     font-family: var(--font-inter), sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-playfair), serif;
+  }
+
+  /* Animación de entintado/overlay para cambio de tema */
+  html.theme-transitioning::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--background);
+    z-index: 9999;
+    pointer-events: none;
+    animation: theme-tint 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: opacity;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+
+  @keyframes theme-tint {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* Prevenir parpadeo durante la transición */
+  html.theme-transitioning {
+    isolation: isolate;
+  }
+
+  html.theme-transitioning * {
+    will-change: auto;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+
+  html {
+    transition: none;
+  }
+
+  body,
+  body * {
+    transition: none;
+  }
+
+  /* Activar transiciones solo cuando NO está cambiando el tema */
+  html:not(.theme-transitioning) body,
+  html:not(.theme-transitioning) body * {
+    transition: 
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      fill 0.2s ease;
+  }
+
+  /* Preservar transiciones específicas de hover */
+  *:hover,
+  *:focus,
+  *:active {
+    transition-duration: 0.2s;
+  }
+
+  /* No aplicar transiciones a elementos con animaciones propias */
+  .fade-in,
+  .slide-in-left,
+  .slide-in-right,
+  .scale-in,
+  [class*="animate-"] {
+    transition: none;
   }
 }
 
@@ -179,6 +232,41 @@
 /* Efectos hover mejorados */
 .product-card {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* View Transitions API - Animación para cambio de tema */
+@supports (view-transition-name: none) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.5s;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  ::view-transition-old(root) {
+    animation-name: theme-fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: theme-fade-in;
+  }
+
+  @keyframes theme-fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes theme-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 .product-card:hover {
