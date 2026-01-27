@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as React from 'react';
 import { Search, ShoppingBag, Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
@@ -13,11 +13,16 @@ import { useTheme } from 'next-themes';
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false); // Estado local para isDark
   const menuRef = React.useRef<HTMLDivElement>(null);
   const userMenuRef = React.useRef<HTMLDivElement>(null);
   const { user, logout, isAuthenticated } = useAuth();
   const { theme, resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark' || theme === 'dark';
+
+  // Sincronizar isDark en el cliente
+  useEffect(() => {
+    setIsDark(resolvedTheme === 'dark' || theme === 'dark');
+  }, [theme, resolvedTheme]);
 
   // Cerrar menú al hacer clic/touch fuera
   React.useEffect(() => {
